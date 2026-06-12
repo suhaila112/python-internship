@@ -1,0 +1,73 @@
+#custom exception
+class TaskNotFoundError(Exception):
+    pass
+class TaskAlreadyExistsError(Exception):
+    pass
+
+tasks={}
+def get_all_task()->list:
+    return list(tasks.values())
+
+def get_task(id:int)->dict:
+    if id not in tasks:
+        raise TaskNotFoundError("Task not found")
+    return tasks[id]
+
+def create_task(data:dict)->dict:
+    task_id=data["id"]
+    if task_id in tasks:
+        raise TaskAlreadyExistsError("Task id already exists")
+    tasks[task_id]=data 
+    return data
+ 
+def update_task(id:int,data:dict)->dict:
+    if id not in tasks:
+        raise TaskNotFoundError("Task not found")
+    tasks[id].update(data)
+    return tasks[id]
+
+def delete_task(id:int)->bool:
+    if id not in tasks:
+        raise TaskNotFoundError("Task not found")
+    del tasks[id]
+    return True
+
+while True:
+    print("\n__TASK MANAGER__")
+    print("1. view all tasks")
+    print("2. view task")
+    print("3. create task")
+    print("4. update task")
+    print("5. delete task")
+    print("6. exit")
+    choice=input("enter choice: ")
+    try:
+        if choice=="1":
+            print(get_all_task())
+        elif choice=="2":
+            task_id=int(input("enter task id: "))
+            print(get_task(task_id))
+        elif choice=="3":
+            task_id=int(input("enter id:" ))
+            title=input("enter title: ")
+            task={
+                "id":task_id,
+                "title":title
+            }
+            print(create_task(task))
+        elif choice=="4":
+            task_id=int(input("enter task id: "))
+            new_title=input("enter new title: ")
+            print(update_task(task_id,{"title":new_title}))
+        elif choice=="5":
+            task_id=int(input("enter task id: "))
+            delete_task(task_id)
+            print("task deleted")
+        elif choice=="6":
+            print("goodbye!")
+            break
+        else:
+            print("invalid choice")
+    except Exception as e:
+        print("error: ", e)
+    
